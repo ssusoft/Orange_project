@@ -27,27 +27,8 @@ int main(){
 	
 	return 0;
 }
+	
+	
+***********************************************************************************************************
 
-void ControlC(int sig){
-	char ch;
-	printf("Get Interrupt Signal\n");
-	printf("Do you want to exit myMovie program? (Y/N) ");
-	ch = getchar();
-	if(ch == 'Y' || ch == 'y')
-		exit(0);
-	else if(ch == 'N' || ch == 'n')
-		printf("(movie) ");
-}
-
-}
-
-void ControlC(int sig){
-	char ch;
-	printf("Get Interrupt Signal\n");
-	printf("Do you want to exit myMovie program? (Y/N) ");
-	ch = getchar();
-	if(ch == 'Y' || ch == 'y')
-		exit(0);
-	else if(ch == 'N' || ch == 'n')
-		printf("(movie) ");
-}
+	
