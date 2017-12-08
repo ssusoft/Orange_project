@@ -3,6 +3,7 @@
 	#include "header.h"
 #endif
 
+
 void StartProgram(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 	printf(">> Welcome to My Movie <<\n");
 	printf("File Loading.....\n");
