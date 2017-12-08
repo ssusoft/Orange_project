@@ -1,6 +1,7 @@
+
 #ifndef Header_Include
-#define Header_Include
-#include "header.h"
+	#define Header_Include
+	#include "header.h"
 #endif
 
 int movie_serial = 0;
@@ -65,7 +66,7 @@ int FileAddMovieList(AdminMovie * AM, FILE * fptr_movie_log){
 	char * tmp = (char *)malloc(100);
 	char ch;
 	int i = 0;
-
+	
 	fscanf(fptr_movie_log, "%d:", &(newp->serial_number)); // read serial_number
 	
 	if(movie_serial < newp->serial_number)
