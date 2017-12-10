@@ -1,4 +1,4 @@
-#ifndef Header_Include
+	#ifndef Header_Include
 	#define Header_Include
 	#include "header.h"
 #endif
@@ -12,7 +12,6 @@ int main(){
 	signal(SIGINT, fptr);
 	while(1)
 		CommandInput(AM, AD, AA);
-	
 	return 0;
 }
 
