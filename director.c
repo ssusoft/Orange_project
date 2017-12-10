@@ -1,4 +1,3 @@
-
 #ifndef Header_Include
 	#define Header_Include
 	#include "header.h"
@@ -28,7 +27,7 @@ int CreateDirectorList(AdminDirector * AD) {
 /*****************************************************************************************************************************************/
 int ReadDirectorlog(AdminDirector * AD) { // this function read movie_log.txt
 	FILE * fptr_director_log;
-	fptr_director_log = fopen("direc.txt", "rt");
+	fptr_director_log = fopen("director_log", "rt");
 
 	char * tag = (char *)malloc(100);
 	char ch;
@@ -49,7 +48,6 @@ int ReadDirectorlog(AdminDirector * AD) { // this function read movie_log.txt
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
-
 int FileAddDirectorList(AdminDirector * AD, FILE * fptr_director_log){
 	NextDirector * newp = (NextDirector *)malloc(sizeof(NextDirector));
 	NextDirector * btp = AD->head;
@@ -144,7 +142,7 @@ int FileUpdateDirectorList(AdminDirector * AD, FILE * fptr_director_log){
 			fseek(fptr_director_log, -1, SEEK_CUR);
 			if(i == 0){
 				free(match_director_node->director_name);
-				fscanf(fptr_director_log, "%s", tmp);
+				fscanf(fptr_director_log, "%[^:]", tmp);
 				tmp = ColonCheckInFILE(tmp, "??;", ":");
 				match_director_node->director_name = (char *)malloc(strlen(tmp) + 1);
 				strcpy(match_director_node->director_name, tmp);
@@ -153,7 +151,7 @@ int FileUpdateDirectorList(AdminDirector * AD, FILE * fptr_director_log){
 				fscanf(fptr_director_log, "%c", &(match_director_node->sex));
 			else if (i == 2){
 				free(match_director_node->birth);
-				fscanf(fptr_director_log, "%s", tmp);
+				fscanf(fptr_director_log, "%[^:]", tmp);
 				tmp = ColonCheckInFILE(tmp, "??;", ":");
 				match_director_node->birth = (char *)malloc(strlen(tmp) + 1);
 				strcpy(match_director_node->birth, tmp);
@@ -182,6 +180,7 @@ int FileUpdateDirectorList(AdminDirector * AD, FILE * fptr_director_log){
 					fscanf(fptr_director_log, "%[^,\n]", tmp);
 					if(*tmp == ' ')
 						tmp = tmp + 1;
+					tmp = ColonCheckInFILE(tmp, "??;", ":");
 					match_director_node->best_movie_name->name = (char *)malloc(strlen(tmp)+1);
 					strcpy(match_director_node->best_movie_name->name, tmp);
 					
@@ -400,8 +399,8 @@ int SortDirector(AdminDirector * AD){
 
 	else{
 		option = getchar(); // t g d y r a or -f
-
 		if(option == '-'){
+			option = 'z';
 			getchar(); // f
 			getchar(); // ' '
 			scanf("%[^\n]", file_name);
@@ -441,7 +440,6 @@ int SortDirector(AdminDirector * AD){
 						printf("%s, ", ptr_best_movie_name->name);
 						ptr_best_movie_name = ptr_best_movie_name->next_node;
 					}
-					putchar('\n');
 				}
 				ptr_director_node = ptr_director_node->next_director_node;
 			}
@@ -463,10 +461,10 @@ int SortDirector(AdminDirector * AD){
 						printf("%s, ", ptr_best_movie_name->name);
 						ptr_best_movie_name = ptr_best_movie_name->next_node;
 					}
-					putchar('\n');
 				}
 				ptr_director_node = ptr_director_node->next_director_node;
 			}
+			putchar('\n');
 		}
 		else if(option == 'b'){
 			for(int i = 0; i < AD->size ; ++i){
@@ -502,8 +500,8 @@ int SortDirector(AdminDirector * AD){
 					printf("%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'm'){
 			for(int i = 0; i < AD->size ; ++i){
@@ -539,8 +537,8 @@ int SortDirector(AdminDirector * AD){
 					printf("%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'z' || option == 'n'){
 			for(int i = 0; i < AD->size ; ++i){
@@ -576,8 +574,8 @@ int SortDirector(AdminDirector * AD){
 					printf("%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else{
 			printf("Option Error\n");
@@ -600,13 +598,12 @@ int SortDirector(AdminDirector * AD){
 					ptr_best_movie_name = ptr_director_node->best_movie_name;
 					while(1){
 						if(ptr_best_movie_name->next_node == NULL){
-							fprintf(fptr_director_list, "%s\n", ptr_best_movie_name->name);
+							fprintf(fptr_director_list, "%s\n\n", ptr_best_movie_name->name);
 							break;
 						}
 						fprintf(fptr_director_list, "%s, ", ptr_best_movie_name->name);
 						ptr_best_movie_name = ptr_best_movie_name->next_node;
 					}
-					fputc('\n', fptr_director_list);
 				}
 				ptr_director_node = ptr_director_node->next_director_node;
 			}
@@ -622,16 +619,16 @@ int SortDirector(AdminDirector * AD){
 					ptr_best_movie_name = ptr_director_node->best_movie_name;
 					while(1){
 						if(ptr_best_movie_name->next_node == NULL){
-							fprintf(fptr_director_list, "%s\n", ptr_best_movie_name->name);
+							fprintf(fptr_director_list, "%s\n\n", ptr_best_movie_name->name);
 							break;
 						}
 						fprintf(fptr_director_list, "%s, ", ptr_best_movie_name->name);
 						ptr_best_movie_name = ptr_best_movie_name->next_node;
 					}
-					fputc('\n', fptr_director_list);
 				}
 				ptr_director_node = ptr_director_node->next_director_node;
 			}
+			putchar('\n');
 		}
 		
 		else if(option == 'b'){
@@ -662,14 +659,14 @@ int SortDirector(AdminDirector * AD){
 				ptr_best_movie_name = (*(dptr_director + i))->best_movie_name;
 				while(1){
 					if(ptr_best_movie_name->next_node == NULL){
-						printf("%s\n", ptr_best_movie_name->name);
+						fprintf(fptr_director_list, "%s\n\n", ptr_best_movie_name->name);
 						break;
 					}
 					printf("%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 //
 		else if(option == 'm'){
@@ -700,14 +697,14 @@ int SortDirector(AdminDirector * AD){
 				ptr_best_movie_name = (*(dptr_director + i))->best_movie_name;
 				while(1){
 					if(ptr_best_movie_name->next_node == NULL){
-						printf("%s\n", ptr_best_movie_name->name);
+						fprintf(fptr_director_list, "%s\n\n", ptr_best_movie_name->name);
 						break;
 					}
-					printf("%s, ", ptr_best_movie_name->name);
+					fprintf(fptr_director_list, "%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 
 		else if (option == 'z' || option == 'n'){
@@ -731,21 +728,21 @@ int SortDirector(AdminDirector * AD){
 			}
 
 			for(int i = 0; i < AD->size; ++i){
-				printf("Name : %s\n", (*(dptr_director + i))->director_name);
-				printf("Sex : %c\n", (*(dptr_director + i))->sex);
-				printf("Birth : %s\n", (*(dptr_director + i))->birth);
-				printf("Best Movie : ");
+				fprintf(fptr_director_list, "Name : %s\n", (*(dptr_director + i))->director_name);
+				fprintf(fptr_director_list, "Sex : %c\n", (*(dptr_director + i))->sex);
+				fprintf(fptr_director_list, "Birth : %s\n", (*(dptr_director + i))->birth);
+				fprintf(fptr_director_list, "Best Movie : ");
 				ptr_best_movie_name = (*(dptr_director + i))->best_movie_name;
 				while(1){
 					if(ptr_best_movie_name->next_node == NULL){
-						printf("%s\n", ptr_best_movie_name->name);
+						fprintf(fptr_director_list, "%s\n\n", ptr_best_movie_name->name);
 						break;
 					}
-					printf("%s, ", ptr_best_movie_name->name);
+					fprintf(fptr_director_list, "%s, ", ptr_best_movie_name->name);
 					ptr_best_movie_name = ptr_best_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else{
 			printf("Option Error\n");
@@ -756,12 +753,12 @@ int SortDirector(AdminDirector * AD){
 	free(tmp);
 	free(file_name);
 	free(dptr_director);
-	printf("\n@@Done\n");
+	printf("@@Done\n");
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
 int DeleteDirector(AdminDirector * AD){
-	FILE * fptr_director_log = fopen("direc.txt", "at");
+	FILE * fptr_director_log = fopen("director_log", "at");
 	int serial_num;
 	NextDirector * match_director_node;
 	NextDirector * bptr_director_node = AD->head;
@@ -796,7 +793,7 @@ int DeleteDirector(AdminDirector * AD){
 		free(destroy_node);
 		destroy_node = curp;
 	}
-	fprintf(fptr_director_log, "delete:%d::::", serial_num);
+	fprintf(fptr_director_log, "delete:%d::::\n", serial_num);
 	fclose(fptr_director_log);
 	--AD->size;
 	printf("@@Done\n");
@@ -1147,15 +1144,14 @@ int PrintDirector(AdminDirector * AD){
 	ptr_best_movie_name = ptr_director_node->best_movie_name;
 
 	printf("%d, %s, %c, %s\n", ptr_director_node->serial_number, ptr_director_node->director_name, ptr_director_node->sex ,ptr_director_node->birth);
-	printf("\t%s", ptr_best_movie_name->name);
 	
 	while(1){
-		if(ptr_movie_node == NULL){
-			putchar('\n');
-			break;
-		
+		printf("\t%s", ptr_best_movie_name->name);
+		if(ptr_movie_node != NULL){
+			printf(", %d, %d\n", ptr_movie_node->year, ptr_movie_node->time);
 		}
-		printf(", %d, %d\n", ptr_movie_node->year, ptr_movie_node->time);
+		else
+			putchar('\n');
 		if(ptr_best_movie_name->next_node == NULL)
 			break;
 		ptr_best_movie_name = ptr_best_movie_name->next_node;
@@ -1166,29 +1162,51 @@ int PrintDirector(AdminDirector * AD){
 }
 /**********************************************************************************************************************************************************/
 int AddDirector(AdminDirector * AD){
-	FILE * fptr_director_log = fopen("direc.txt", "at");
+	FILE * fptr_director_log = fopen("director_log", "at");
 	NextDirector * newp = (NextDirector *)malloc(sizeof(NextDirector));
 	NextDirector * btp = AD->head;
+	NextDirector * match_director_node;
+	NextNode * ptr_best_movie_name;
 	NextNode * ptmp = newp->best_movie_name = (NextNode *)malloc(sizeof(NextNode));
-	ptmp->my_node = NULL;
 	char * tmp = (char *)malloc(100);
-	
+
+	char yn;
 	char ch = 0;
 	int i = 0;
+	ptmp->my_node = NULL;
 
-	getchar();
+	while (getchar() != '\n');
 	newp->serial_number = ++director_serial;
 	
-	fprintf(fptr_director_log, "add:%d:", newp->serial_number);
 	printf(" Director name > ");
 	scanf("%[^\n]", tmp); getchar();
+
+	if((match_director_node = ThereisSameDirector(AD,tmp)) != NULL){
+		ptr_best_movie_name = match_director_node->best_movie_name;
+		printf("@@You have the same record in director list.\n");
+		printf("%d:%s:%c:%s:",match_director_node->serial_number, match_director_node->director_name, match_director_node->sex, match_director_node->birth);
+		while(1){
+			if(ptr_best_movie_name->next_node == NULL){
+				printf("%s\n", ptr_best_movie_name->name);
+				break;
+			}
+			printf("%s, ", ptr_best_movie_name->name);
+			ptr_best_movie_name = ptr_best_movie_name->next_node;
+		}
+		printf("Do you want to add any way? (Y / N)");
+		yn = getchar(); getchar();
+		if(yn == 'N' || yn == 'n')
+			return TRUE;
+	}
+	fprintf(fptr_director_log, "add:%d:", newp->serial_number);
 	newp->director_name = (char *)malloc(strlen(tmp)+1);
 	strcpy(newp->director_name, tmp);
 	ColonCheckInDirector(fptr_director_log, newp->director_name);
 	
 	printf(" Sex > ");
 	scanf("%c", &(newp->sex)); getchar();
-	
+	fprintf(fptr_director_log, "%c:", newp->sex);
+
 	printf(" Birth > ");
 	scanf("%[^\n]", tmp); getchar();
 	newp->birth = (char *)malloc(strlen(tmp) + 1);
@@ -1209,7 +1227,7 @@ int AddDirector(AdminDirector * AD){
 
 			newp->best_movie_name->name = (char *)malloc(strlen(tmp) + 1);
 			strcpy(newp->best_movie_name->name, tmp);
-			fprintf(fptr_director_log, "%s", newp->best_movie_name->name);
+			ColonCheckInBestmovie(fptr_director_log, newp->best_movie_name->name);
 
 			if(ch == ','){
 				fputc(',', fptr_director_log);
@@ -1241,6 +1259,7 @@ int AddDirector(AdminDirector * AD){
 	++AD->size;
 	free(tmp);
 	fclose(fptr_director_log);
+	printf("@@Done\n");
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
@@ -1266,3 +1285,259 @@ int ColonCheckInDirector(FILE * fptr_director_log, char * string){ // change : t
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
+int ColonCheckInBestmovie(FILE * fptr_director_log, char * string){ // change : to ??;
+	int i = 0;
+	char ch = 'x';
+	char * address;
+
+	if((address = strchr(string, ':')) != NULL){
+		while(1){
+			ch = *(string + i);
+			if(ch == ':')
+				break;
+			else
+				fputc(ch, fptr_director_log);
+			++i;
+		}
+		fprintf(fptr_director_log,"??;%s", address + 1);
+	}
+	else
+		fprintf(fptr_director_log, "%s", string);
+}
+/*****************************************************************************************************************************************/
+NextDirector * ThereisSameDirector(AdminDirector * AD, char * string){
+	NextDirector * ptr_director_node = AD->head;
+
+	while(1){
+		ptr_director_node = ptr_director_node->next_director_node;
+		if(ptr_director_node == AD->tail)
+			break;
+		if(strcmp(string, ptr_director_node->director_name)==0)
+			return ptr_director_node;
+	}
+	return NULL;
+}
+/*****************************************************************************************************************************************/
+int UpdateDirector(AdminDirector * AD){
+
+	FILE * fptr_director_log = fopen("director_log", "at");
+	NextDirector * ptr_director_node;
+	char * option = (char *)malloc(10);
+	char * sub = (char *)malloc(10);
+	char tmp;
+	int serial_num = 0;
+
+	if(scanf("%d", &serial_num)){ // no option
+		getchar();
+		ptr_director_node = SearchDirectorSerial(AD, serial_num);
+		if(UpdateDirectorName(fptr_director_log, AD, serial_num) == FALSE)
+			return FALSE;
+
+		UpdateDirectorSex(fptr_director_log, ptr_director_node);
+		UpdateDirectorBirth(fptr_director_log, ptr_director_node);
+		UpdateDirectorBestmovie(fptr_director_log, ptr_director_node);
+	}
+
+	else{
+		scanf("%s", sub);
+		getchar();
+		scanf("%d", &serial_num);
+		while(getchar() != '\n') ; 
+		fprintf(fptr_director_log, "update:%d:", serial_num);
+		ptr_director_node = SearchDirectorSerial(AD, serial_num);
+
+		for(int i = 0; i < strlen(sub); ++i){
+			if(*(sub + i) == 'n')
+				*(option) = 'n';
+			else if(*(sub + i) == 's')
+				*(option + 1) = 's';
+			else if(*(sub + i) == 'b')
+				*(option + 2) = 'b';
+			else if(*(sub + i) == 'm')
+				*(option + 3) = 'm';		
+		}
+
+		for(int i = 0; i < 4 ;++i){
+			if(*(option + i) == 'n'){
+				if(UpdateDirectorName(fptr_director_log, AD, serial_num) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 's'){
+				if(UpdateDirectorSex(fptr_director_log, ptr_director_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'b'){
+				if(UpdateDirectorBirth(fptr_director_log, ptr_director_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'm'){
+				if(UpdateDirectorBestmovie(fptr_director_log, ptr_director_node) == FALSE){
+					return FALSE;
+				}
+			}
+			else{
+				fprintf(fptr_director_log, "=:");
+			}
+		}
+	}
+	fclose(fptr_director_log);
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateDirectorName(FILE * fptr_director_log, AdminDirector * AD, int serial_num){
+	NextDirector * ptr_director_node = SearchDirectorSerial(AD, serial_num);
+	NextDirector * match_director_node;
+	NextNode * ptr_best_movie_name;
+	char * tmp = (char *)malloc(100);
+	char ch;
+
+	if(ptr_director_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Director name > ");
+	scanf("%[^\n]", tmp); getchar();
+
+	if((match_director_node = ThereisSameDirector(AD, tmp)) == NULL){
+		free(ptr_director_node->director_name);
+		ptr_director_node->director_name = (char *)malloc(strlen(tmp) + 1);
+		strcpy(ptr_director_node->director_name, tmp);
+		fprintf(fptr_director_log, "update:%d:", serial_num);
+		ColonCheckInDirector(fptr_director_log, ptr_director_node->director_name); // fprintf
+	}
+
+	else{
+		ptr_best_movie_name = match_director_node->best_movie_name;
+		printf("@@You have the same record in director list.\n");
+		printf("Director name : %s\n", match_director_node->director_name);
+		printf("Sex : %c\n", match_director_node->sex);
+		printf("Birth : %s\n", match_director_node->birth);
+		printf("Best movie name : ");
+		
+		while(1){
+			if(ptr_best_movie_name->next_node == NULL){
+				printf("%s\n", ptr_best_movie_name->name);
+				break;
+			}
+			printf("%s, ", ptr_best_movie_name->name);
+			ptr_best_movie_name = ptr_best_movie_name->next_node;
+		}
+
+		printf("Do you want to change the record? (Y / N)");
+		ch = getchar(); getchar();
+
+		if(ch == 'Y' || ch == 'y'){
+			ptr_director_node = ThereisSameDirector(AD, tmp);
+			free(ptr_director_node->director_name);
+			ptr_director_node->director_name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_director_node->director_name, tmp);
+			fprintf(fptr_director_log, "update:%d:", serial_num);
+			ColonCheckInDirector(fptr_director_log, ptr_director_node->director_name); // fprintf
+		}
+		else{
+			return FALSE;
+		}
+	}
+}
+/*****************************************************************************************************************************************/
+int UpdateDirectorBestmovie(FILE * fptr_director_log, NextDirector * ptr_director_node){
+	NextNode * destroy_node;
+	NextNode * cur_node;
+	NextNode * save_node;
+	char * tmp = (char *)malloc(100);
+	char ch;
+	int cnt = 0;
+	if(ptr_director_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+	destroy_node = ptr_director_node->best_movie_name;
+	while(1){
+		if(destroy_node -> next_node!= NULL)
+			cur_node = destroy_node->next_node;
+		else
+			break;
+
+		free(destroy_node->name);
+		free(destroy_node);
+		destroy_node = cur_node;
+	}
+	free(destroy_node->name);
+	free(destroy_node);
+	// destroy
+	ptr_director_node->best_movie_name = (NextNode *)malloc(sizeof(NextNode));
+	save_node = ptr_director_node->best_movie_name;
+	printf("Best Movie > ");
+	
+	while (1) {
+		ch = getchar();
+
+		if (ch == ',' || ch == '\n') {
+			*(tmp + cnt) = '\0';
+
+			if(*tmp == ' ')
+				tmp = tmp + 1;
+
+			ptr_director_node->best_movie_name->name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_director_node->best_movie_name->name, tmp);
+			ColonCheckInBestmovie(fptr_director_log, ptr_director_node->best_movie_name->name);
+
+			if(ch == ','){
+				fputc(',', fptr_director_log);
+				ptr_director_node->best_movie_name->next_node = (NextNode *)malloc(sizeof(NextNode));
+				ptr_director_node->best_movie_name->my_node = NULL;
+				ptr_director_node->best_movie_name = ptr_director_node->best_movie_name->next_node;
+				cnt = 0;
+			}
+
+			else if(ch == '\n'){
+				fputc('\n', fptr_director_log);
+				ptr_director_node->best_movie_name->my_node = NULL;
+				ptr_director_node->best_movie_name->next_node = NULL;
+				break;
+			}
+		}
+
+		else {
+			*(tmp + cnt) = ch;
+			++cnt;
+		}
+	}
+	ptr_director_node->best_movie_name = save_node;
+	return TRUE;
+}
+
+/*****************************************************************************************************************************************/
+int UpdateDirectorBirth(FILE * fptr_director_log, NextDirector * ptr_director_node){
+	char * tmp = (char *)malloc(100);
+	char ch;
+
+	printf("Birth > ");
+	scanf("%[^\n]", tmp); getchar();
+
+	free(ptr_director_node->birth);
+	ptr_director_node->birth = (char *)malloc(strlen(tmp) + 1);
+	strcpy(ptr_director_node->birth, tmp);
+	ColonCheckInDirector(fptr_director_log, ptr_director_node->birth); // fprintf
+	return TRUE;
+}
+
+/*****************************************************************************************************************************************/
+int UpdateDirectorSex(FILE * fptr_director_log, NextDirector * ptr_director_node){
+	if(ptr_director_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Sex > ");
+	scanf("%c", &(ptr_director_node->sex)); getchar();
+	fprintf(fptr_director_log, "%c:", ptr_director_node->sex);
+	return TRUE;
+}
