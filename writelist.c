@@ -161,10 +161,9 @@ char * ColonCheckInFILE (char *s, const char *olds, const char *news) {
   size_t oldlen = strlen(olds); if (oldlen < 1) return s;
   size_t newlen = strlen(news);
 
-
   if (newlen != oldlen) {
-    for (i = 0; s[i] != '\0';) {
-      if (memcmp(&s[i], olds, oldlen) == 0) count++, i += oldlen;
+    for (i = 0; *(s + i) != '\0';) {
+      if (memcmp(&(*(s+i)), olds, oldlen) == 0) count++, i += oldlen;
       else i++;
     }
   } else i = strlen(s);
