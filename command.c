@@ -1,4 +1,3 @@
-
 #ifndef Header_Include6
 	#define Header_Include
 	#include "header.h"
@@ -20,16 +19,15 @@ void CommandInput(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 			switch(ch){
 				case 'm' :
 						  AddMovie(AM);
-						  LinkMovieActor(AM, AA);
-						  LinkMovieDirector(AM, AD);
+						  Link(AA, AD, AM);
 						  break;
 				case 'd' : 
 						  AddDirector(AD);
-						  LinkDirectorMovie(AD, AM);
+						  Link(AA, AD, AM);
 						  break;
 				case 'a' : 
 						  AddActor(AA);
-						  LinkActorMovie(AA, AM);
+						  Link(AA, AD, AM);
 						  break;
 				case ' ' : 
 						  continue;
@@ -37,22 +35,21 @@ void CommandInput(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 						  break;
 			}
 		}
-	/*
+	
 		else if(strcmp(command, "update") == 0){
 			ch = getchar();
 			switch(ch){
 				case 'm' :
 						  UpdateMovie(AM);
-						  LinkMovieDirector(AM, AD); // need test
-						  LinkActorMovie(AA, AM); // need test
+						  Link(AA, AD, AM);
 						  break;
 				case 'd' :
 						  UpdateDirector(AD);
-						  LinkDirectorMovie(AD, AM); // need test
+						  Link(AA, AD, AM);
 						  break;
 				case 'a' :
 						  UpdateActor(AA);
-						  LinkActorMovie(AA, AM); // need test
+						  Link(AA, AD, AM);
 						  break;
 				case ' ' :
 						  continue;
@@ -61,23 +58,22 @@ void CommandInput(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 					      break;
 			}
 		}
-	*/
+	
 		if(strcmp(command, "delete") == 0){
 			getchar();
 			ch = getchar();
 			switch(ch){
 				case 'm' :
 						  DeleteMovie(AM);
-						  LinkDirectorMovie(AD, AM);
-						  LinkActorMovie(AA, AM);
+						  Link(AA, AD, AM);
 						  break;
 				case 'd' :
 						  DeleteDirector(AD);
-						  LinkMovieDirector(AM, AD);
+						  Link(AA, AD, AM);
 						  break;
 				case 'a' :
 						  DeleteActor(AA); 
-						  LinkMovieActor(AM, AA);
+						  Link(AA, AD, AM);
 						  break;
 				default :
 						  continue;
