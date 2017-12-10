@@ -7,8 +7,9 @@ void StartProgram(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 	printf(">> Welcome to My Movie <<\n");
 	printf("File Loading.....\n");
 
-	if(CreateMovieList(AM) == TRUE)
+	if(CreateMovieList(AM) == TRUE){
 		ReadMovielog(AM, AD);
+	}
 	
 	else{
 		printf("CreateMovieList Error\n");
@@ -32,14 +33,18 @@ void StartProgram(AdminMovie * AM, AdminDirector * AD, AdminActor * AA){
 		printf("End program\n");
 		exit(0);
 	}
-//	WriteMovieList(AM);
-//	WriteDirectorList(AD);
-//	WriteActorList(AA);
+	WriteMovieList(AM);
+	WriteDirectorList(AD);
+	WriteActorList(AA);
+	Link(AA, AD, AM);
+	printf("You can use add, update, delete, search, sort, save, end commands.\n");
+}
+
+void Link(AdminActor * AA, AdminDirector * AD, AdminMovie * AM){
 	LinkMovieActor(AM, AA);
 	LinkMovieDirector(AM, AD);
 	LinkDirectorMovie(AD, AM);
 	LinkActorMovie(AA, AM);
-	printf("You can use add, update, delete, search, sort, save, end commands.\n");
 }
 
 int LinkMovieActor(AdminMovie * AM, AdminActor * AA){
