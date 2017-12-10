@@ -1,6 +1,6 @@
 #ifndef Header_Include
-#define Header_Include
-#include "header.h"
+	#define Header_Include
+	#include "header.h"
 #endif
 
 int movie_serial = 0;
@@ -34,11 +34,10 @@ int CreateMovieList(AdminMovie * AM) {
 
 int ReadMovielog(AdminMovie * AM, AdminDirector * AD) { // this function read movie_log.txt
 	FILE * fptr_movie_log;
-	fptr_movie_log = fopen("mov.txt", "rt");
+	fptr_movie_log = fopen("movie_log", "rt");
 
 	char * tag = (char *)malloc(100);
 	char ch;
-
 	while ((ch = fgetc(fptr_movie_log)) != EOF){
 		fseek(fptr_movie_log, -1, SEEK_CUR);
 		fscanf(fptr_movie_log, "%[^:]:", tag);
@@ -57,7 +56,6 @@ int ReadMovielog(AdminMovie * AM, AdminDirector * AD) { // this function read mo
 	return TRUE;
 }
 /**************************************************************************************************************************************************************************/
-
 int FileAddMovieList(AdminMovie * AM, FILE * fptr_movie_log){
 	NextMovie * newp = (NextMovie *)malloc(sizeof(NextMovie));
 	NextMovie * btp = AM->head;
@@ -290,6 +288,7 @@ int FileDeleteMovieList(AdminMovie * AM, FILE * fptr_movie_log){
 		if(ch == '\n' || ch == EOF)
 			break;
 	}
+	--AM->size;
 	return TRUE;
 }
 /**************************************************************************************************************************************************************************/
@@ -492,6 +491,7 @@ int SortMovie(AdminMovie * AM){
 		option = getchar(); // t g d y r a or -f
 
 		if(option == '-'){
+			option = 'z';
 			getchar(); // f
 			getchar(); // ' '
 			scanf("%[^\n]", file_name);
@@ -548,8 +548,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'd'){
 			for(int i = 0; i < AM->size ; ++i){
@@ -587,8 +587,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 
 		else if(option == 'y'){
@@ -625,8 +625,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 
 		else if(option == 'r'){
@@ -665,8 +665,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'a'){
 
@@ -705,8 +705,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 't' || option == 'z'){
 			for(int i = 0; i < AM->size ; ++i){
@@ -744,8 +744,8 @@ int SortMovie(AdminMovie * AM){
 					printf("%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else{
 			free(dptr_movie);
@@ -789,14 +789,14 @@ int SortMovie(AdminMovie * AM){
 				fprintf(fptr_movie_list, "Actor : ");
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						fprintf(fptr_movie_list, "%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
 					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'd'){
 			for(int i = 0; i < AM->size ; ++i){
@@ -828,14 +828,14 @@ int SortMovie(AdminMovie * AM){
 				fprintf(fptr_movie_list, "Acotr : ");
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						fprintf(fptr_movie_list, "%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
 					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 
 		else if(option == 'y'){
@@ -868,14 +868,14 @@ int SortMovie(AdminMovie * AM){
 				fprintf(fptr_movie_list, "Acotr : ");
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						fprintf(fptr_movie_list, "%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
 					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 
 		else if(option == 'r'){
@@ -908,14 +908,14 @@ int SortMovie(AdminMovie * AM){
 				fprintf(fptr_movie_list, "Acotr : ");
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						fprintf(fptr_movie_list, "%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
 					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'a'){
 			for(int i = 0; i < AM->size ; ++i){
@@ -937,22 +937,22 @@ int SortMovie(AdminMovie * AM){
 
 			for(int i = 0; i < AM->size; ++i){
 				ptr_actor_name = (*(dptr_movie + i))->actor_name;
-				printf("Title : %s\n", (*(dptr_movie + i))->movie_name);
-				printf("Genre : %s\n", (*(dptr_movie + i))->genre);
-				printf("Director : %s\n", (*(dptr_movie + i))->director_name->name);
-				printf("Year : %d\n", (*(dptr_movie + i))->year);
-				printf("Time : %d\n", (*(dptr_movie + i))->time);
-				printf("Acotr : ");
+				fprintf(fptr_movie_list, "Title : %s\n", (*(dptr_movie + i))->movie_name);
+				fprintf(fptr_movie_list, "Genre : %s\n", (*(dptr_movie + i))->genre);
+				fprintf(fptr_movie_list, "Director : %s\n", (*(dptr_movie + i))->director_name->name);
+				fprintf(fptr_movie_list, "Year : %d\n", (*(dptr_movie + i))->year);
+				fprintf(fptr_movie_list, "Time : %d\n", (*(dptr_movie + i))->time);
+				fprintf(fptr_movie_list, "Actor : ");
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						printf("%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
-					printf("%s, ", ptr_actor_name->name);
+					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if (option == 't' || option == 'z'){
 			for(int i = 0; i < AM->size ; ++i){
@@ -984,14 +984,14 @@ int SortMovie(AdminMovie * AM){
 				ptr_actor_name = (*(dptr_movie + i))->actor_name;
 				while(1){
 					if(ptr_actor_name->next_node == NULL){
-						fprintf(fptr_movie_list, "%s\n", ptr_actor_name->name);
+						fprintf(fptr_movie_list, "%s\n\n", ptr_actor_name->name);
 						break;
 					}
 					fprintf(fptr_movie_list, "%s, ", ptr_actor_name->name);
 					ptr_actor_name = ptr_actor_name->next_node;
 				}
-				fputc('\n', fptr_movie_list);
 			}
+			putchar('\n');
 		}
 		else{
 			fclose(fptr_movie_list);
@@ -1010,7 +1010,7 @@ int SortMovie(AdminMovie * AM){
 }
 /**************************************************************************************************************************************************************************/
 int DeleteMovie(AdminMovie * AM){
-	FILE * fptr_movie_log = fopen("mov.txt", "at");
+	FILE * fptr_movie_log = fopen("movie_log", "at");
 	int serial_num;
 	NextMovie * match_movie_node;
 	NextMovie * bptr_movie_node = AM->head;
@@ -1047,10 +1047,10 @@ int DeleteMovie(AdminMovie * AM){
 		free(destroy_node);
 		destroy_node = curp;
 	}
-	fprintf(fptr_movie_log, "delete:%d::::::", serial_num);
+	fprintf(fptr_movie_log, "delete:%d::::::\n", serial_num);
 	fclose(fptr_movie_log);
 	--AM->size;
-	printf("@@ Done\n");
+	printf("@@Done\n");
 	return TRUE;
 }
 /**************************************************************************************************************************************************************************/
@@ -1523,21 +1523,42 @@ void MatchMoviePrint(NextMovie * ptr_movie_node){
 }
 /*****************************************************************************************************************************************/
 int AddMovie(AdminMovie * AM){
-	FILE * fptr_movie_log = fopen("mov.txt", "at");
+	FILE * fptr_movie_log = fopen("movie_log", "at");
 	NextMovie * newp = (NextMovie *)malloc(sizeof(NextMovie));
 	NextMovie * btp = AM->head;
+	NextMovie * match_movie_node;
+	NextNode * ptr_actor_name;
 	NextNode * ptmp = newp->actor_name = (NextNode *)malloc(sizeof(NextNode));
 	ptmp->my_node = NULL;
 	char * tmp = (char *)malloc(100);
-	
+	char yn;
 	char ch = 0;
 	int i = 0;
 	getchar();
 	newp->serial_number = ++movie_serial;
 	
-	fprintf(fptr_movie_log, "add:%d:", newp->serial_number);
 	printf(" title > ");
 	scanf("%[^\n]", tmp); getchar();
+
+	if((match_movie_node = ThereisSameMovie(AM,tmp)) != NULL){
+		ptr_actor_name = match_movie_node->actor_name;
+		printf("@@You have the same record in movie list.\n");
+		printf("%d:%s:%s:%s:%d:%d:",match_movie_node->serial_number, match_movie_node->movie_name, match_movie_node->genre, match_movie_node->director_name->name, match_movie_node->year, match_movie_node->time);
+		while(1){
+			if(ptr_actor_name->next_node == NULL){
+				printf("%s\n", ptr_actor_name->name);
+				break;
+			}
+			printf("%s, ", ptr_actor_name->name);
+			ptr_actor_name = ptr_actor_name->next_node;
+		}
+		printf("Do you want to add any way? (Y / N)");
+		yn = getchar(); getchar();
+		if(yn == 'N' || yn == 'n')
+			return TRUE;
+	}
+
+	fprintf(fptr_movie_log, "add:%d:", newp->serial_number);
 	newp->movie_name = (char *)malloc(strlen(tmp)+1);
 	strcpy(newp->movie_name, tmp);
 	ColonCheckInMovie(fptr_movie_log, newp->movie_name);
@@ -1577,7 +1598,7 @@ int AddMovie(AdminMovie * AM){
 
 			newp->actor_name->name = (char *)malloc(strlen(tmp) + 1);
 			strcpy(newp->actor_name->name, tmp);
-			fprintf(fptr_movie_log, "%s", newp->actor_name->name);
+			fprintf(fptr_movie_log, "%s", newp->actor_name->name); //////////////////////////////////////////////////////colon check
 
 			if(ch == ','){
 				fputc(',', fptr_movie_log);
@@ -1609,6 +1630,7 @@ int AddMovie(AdminMovie * AM){
 	++AM->size;
 	free(tmp);
 	fclose(fptr_movie_log);
+	printf("@@Done\n");
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
@@ -1631,6 +1653,309 @@ int ColonCheckInMovie(FILE * fptr_movie_log, char * string){ // change : to ??;
 	else
 		fprintf(fptr_movie_log, "%s:", string);
 
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int ColonCheckInActorname(FILE * fptr_movie_log, char * string){ // change : to ??;
+	int i = 0;
+	char ch = 'x';
+	char * address;
+
+	if((address = strchr(string, ':')) != NULL){
+		while(1){
+			ch = *(string + i);
+			if(ch == ':')
+				break;
+			else
+				fputc(ch, fptr_movie_log);
+			++i;
+		}
+		fprintf(fptr_movie_log,"??;%s", address + 1);
+	}
+	else
+		fprintf(fptr_movie_log, "%s", string);
+}
+/*****************************************************************************************************************************************/
+NextMovie * ThereisSameMovie(AdminMovie * AM, char * string){
+	NextMovie * ptr_movie_node = AM->head;
+
+	while(1){
+		ptr_movie_node = ptr_movie_node->next_movie_node;
+		if(ptr_movie_node == AM->tail)
+			break;
+		if(strcmp(string, ptr_movie_node->movie_name)==0)
+			return ptr_movie_node;
+	}
+	return NULL;
+}
+/*****************************************************************************************************************************************/
+int UpdateMovie(AdminMovie * AM){
+
+	FILE * fptr_movie_log = fopen("movie_log", "at");
+	NextMovie * ptr_movie_node;
+	char * option = (char *)malloc(10);
+	char * sub = (char *)malloc(10);
+	char tmp;
+	int serial_num = 0;
+
+	if(scanf("%d", &serial_num)){ // no option
+		getchar();
+		ptr_movie_node = SearchMovieSerial(AM, serial_num);
+		if(UpdateMovieName(fptr_movie_log, AM, serial_num) == FALSE)
+			return FALSE;
+
+		UpdateMovieGenre(fptr_movie_log, ptr_movie_node); //////////////////////////////////////////////////////////
+		UpdateMovieDirector(fptr_movie_log, ptr_movie_node);
+		UpdateMovieYear(fptr_movie_log, ptr_movie_node);
+		UpdateMovieTime(fptr_movie_log, ptr_movie_node);
+		UpdateMovieActorname(fptr_movie_log, ptr_movie_node);
+	}
+
+	else{
+		scanf("%s", sub);
+		getchar();
+		scanf("%d", &serial_num);
+		while(getchar() != '\n') ; 
+		ptr_movie_node = SearchMovieSerial(AM, serial_num);
+
+		for(int i = 0; i < strlen(sub); ++i){
+			if(*(sub + i) == 't')
+				*(option) = 't';
+			else if(*(sub + i) == 'g')
+				*(option + 1) = 'g';
+			else if(*(sub + i) == 'd')
+				*(option + 2) = 'd';
+			else if(*(sub + i) == 'y')
+				*(option + 3) = 'y';		
+			else if(*(sub + i) == 'r')
+				*(option + 4) = 'r';		
+			else if(*(sub + i) == 'a')
+				*(option + 5) = 'a';		
+		}
+
+		if(*(option) != 't')
+			fprintf(fptr_movie_log, "update:%d:", serial_num);
+		
+		for(int i = 0; i < 6 ;++i){
+			if(*(option + i) == 't'){
+				if(UpdateMovieName(fptr_movie_log, AM, serial_num) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'g'){
+				if(UpdateMovieGenre(fptr_movie_log, ptr_movie_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'd'){
+				if(UpdateMovieDirector(fptr_movie_log, ptr_movie_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'y'){
+				if(UpdateMovieYear(fptr_movie_log, ptr_movie_node) == FALSE){
+					return FALSE;
+				}
+			}
+			else if(*(option + i) == 'r'){
+				if(UpdateMovieTime(fptr_movie_log, ptr_movie_node) == FALSE){
+					return FALSE;
+				}
+			}
+			else if(*(option + i) == 'a'){
+				if(UpdateMovieActorname(fptr_movie_log, ptr_movie_node) == FALSE){
+					return FALSE;
+				}
+			}
+			else{
+				fprintf(fptr_movie_log, "=:");
+			}
+		}
+	}
+	fclose(fptr_movie_log);
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateMovieName(FILE * fptr_movie_log, AdminMovie * AM, int serial_num){
+	NextMovie * ptr_movie_node = SearchMovieSerial(AM, serial_num);
+	NextMovie * match_movie_node;
+	NextNode * ptr_actor_name;
+	char * tmp = (char *)malloc(100);
+	char ch;
+	if(ptr_movie_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("title > ");
+	scanf("%[^\n]", tmp); getchar();
+
+	if((match_movie_node = ThereisSameMovie(AM, tmp)) == NULL){
+		free(ptr_movie_node->movie_name);
+		ptr_movie_node->movie_name = (char *)malloc(strlen(tmp) + 1);
+		strcpy(ptr_movie_node->movie_name, tmp);
+		fprintf(fptr_movie_log, "update:%d:", serial_num);
+		ColonCheckInMovie(fptr_movie_log, ptr_movie_node->movie_name); // fprintf
+	}
+
+	else{
+		ptr_actor_name = match_movie_node->actor_name;
+		printf("@@You have the same record in movie list.\n");
+		printf("Title : %s\n", match_movie_node->movie_name);
+		printf("Genre : %s\n", match_movie_node->genre);
+		printf("Director : %s\n", match_movie_node->director_name->name);
+		printf("Year : %d\n", match_movie_node->year);
+		printf("Time : %d\n", match_movie_node->time);
+		printf("Actor name : ");
+		
+		while(1){
+			if(ptr_actor_name->next_node == NULL){
+				printf("%s\n", ptr_actor_name->name);
+				break;
+			}
+			printf("%s, ", ptr_actor_name->name);
+			ptr_actor_name = ptr_actor_name->next_node;
+		}
+
+		printf("Do you want to change the record? (Y / N)");
+		ch = getchar(); getchar();
+
+		if(ch == 'Y' || ch == 'y'){
+			ptr_movie_node = ThereisSameMovie(AM, tmp);
+			free(ptr_movie_node->movie_name);
+			ptr_movie_node->movie_name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_movie_node->movie_name, tmp);
+			fprintf(fptr_movie_log, "update:%d:", serial_num);
+			ColonCheckInMovie(fptr_movie_log, ptr_movie_node->movie_name); // fprintf
+		}
+		else{
+			return FALSE;
+		}
+	}
+}
+/*****************************************************************************************************************************************/
+int UpdateMovieActorname(FILE * fptr_movie_log, NextMovie * ptr_movie_node){
+	NextNode * destroy_node;
+	NextNode * cur_node;
+	NextNode * save_node;
+	char * tmp = (char *)malloc(100);
+	char ch;
+	int cnt = 0;
+	if(ptr_movie_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+	destroy_node = ptr_movie_node->actor_name;
+	while(1){
+		if(destroy_node -> next_node!= NULL)
+			cur_node = destroy_node->next_node;
+		else
+			break;
+
+		free(destroy_node->name);
+		free(destroy_node);
+		destroy_node = cur_node;
+	}
+	free(destroy_node->name);
+	free(destroy_node);
+	// destroy
+	ptr_movie_node->actor_name = (NextNode *)malloc(sizeof(NextNode));
+	save_node = ptr_movie_node->actor_name;
+	printf("Actor name > ");
+	
+	while (1) {
+		ch = getchar();
+
+		if (ch == ',' || ch == '\n') {
+			*(tmp + cnt) = '\0';
+
+			if(*tmp == ' ')
+				tmp = tmp + 1;
+
+			ptr_movie_node->actor_name->name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_movie_node->actor_name->name, tmp);
+			ColonCheckInActorname(fptr_movie_log, ptr_movie_node->actor_name->name);
+
+			if(ch == ','){
+				fputc(',', fptr_movie_log);
+				ptr_movie_node->actor_name->next_node = (NextNode *)malloc(sizeof(NextNode));
+				ptr_movie_node->actor_name->my_node = NULL;
+				ptr_movie_node->actor_name = ptr_movie_node->actor_name->next_node;
+				cnt = 0;
+			}
+
+			else if(ch == '\n'){
+				fputc('\n', fptr_movie_log);
+				ptr_movie_node->actor_name->my_node = NULL;
+				ptr_movie_node->actor_name->next_node = NULL;
+				break;
+			}
+		}
+
+		else {
+			*(tmp + cnt) = ch;
+			++cnt;
+		}
+	}
+	ptr_movie_node->actor_name = save_node;
+	return TRUE;
+}
+
+/*****************************************************************************************************************************************/
+int UpdateMovieGenre(FILE * fptr_movie_log, NextMovie * ptr_movie_node){
+	char * tmp = (char *)malloc(100);
+	char ch;
+
+	printf("Genre > ");
+	scanf("%[^\n]", tmp); getchar();
+
+	free(ptr_movie_node->genre);
+	ptr_movie_node->genre = (char *)malloc(strlen(tmp) + 1);
+	strcpy(ptr_movie_node->genre, tmp);
+	ColonCheckInMovie(fptr_movie_log, ptr_movie_node->genre); // fprintf
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateMovieDirector(FILE * fptr_movie_log, NextMovie * ptr_movie_node){
+	char * tmp = (char *)malloc(100);
+	char ch;
+
+	printf("Director > ");
+	scanf("%[^\n]", tmp); getchar();
+
+	free(ptr_movie_node->director_name->name);
+	free(ptr_movie_node->director_name);
+	ptr_movie_node->director_name = (NextNode *)malloc(sizeof(NextNode));
+	ptr_movie_node->director_name->name = (char *)malloc(strlen(tmp) + 1);
+	strcpy(ptr_movie_node->director_name->name, tmp);
+	ColonCheckInMovie(fptr_movie_log, ptr_movie_node->director_name->name); // fprintf
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateMovieYear(FILE * fptr_movie_log, NextMovie * ptr_movie_node){
+	if(ptr_movie_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Year > ");
+	scanf("%d", &(ptr_movie_node->year)); getchar();
+	fprintf(fptr_movie_log, "%d:", ptr_movie_node->year);
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateMovieTime(FILE * fptr_movie_log, NextMovie * ptr_movie_node){
+	if(ptr_movie_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Time > ");
+	scanf("%d", &(ptr_movie_node->time)); getchar();
+	fprintf(fptr_movie_log, "%d:", ptr_movie_node->time);
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
