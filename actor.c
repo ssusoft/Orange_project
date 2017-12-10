@@ -1,6 +1,6 @@
 #ifndef Header_Include
-	#define Header_Include
-	#include "header.h"
+#define Header_Include
+#include "header.h"
 #endif
 
 int actor_serial = 0;
@@ -18,21 +18,20 @@ int CreateActorList(AdminActor * AA) {
 	AA->head->next_actor_node = AA->tail;
 	AA->tail->next_actor_node = AA->tail;
 	AA->size = 0;
-	
+
 	AA->head->actor_name = NULL;
 	AA->head->birth = NULL;
 	AA->head->appear_movie_name = NULL;
-	
+
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
 int ReadActorlog(AdminActor * AA) { // this function read movie_log.txt
 	FILE * fptr_actor_log;
-	fptr_actor_log = fopen("ac.txt", "rt");
+	fptr_actor_log = fopen("actor_log", "rt");
 
 	char * tag = (char *)malloc(100);
-	char ch;
-	while ((ch = fgetc(fptr_actor_log)) != EOF){
+	while (fgetc(fptr_actor_log) != EOF){
 		fseek(fptr_actor_log, -1, SEEK_CUR);
 		fscanf(fptr_actor_log, "%[^:]:", tag);
 		if (strcmp(tag, "add") == 0)
@@ -41,7 +40,7 @@ int ReadActorlog(AdminActor * AA) { // this function read movie_log.txt
 		else if (strcmp(tag, "update") == 0)
 			FileUpdateActorList(AA, fptr_actor_log); // update
 
-		else if (strcmp(tag, "delete") == 0) // delect
+		else if (strcmp(tag, "delete") == 0) // delete
 			FileDeleteActorList(AA, fptr_actor_log);
 	}
 	free(tag);
@@ -59,7 +58,7 @@ int FileAddActorList(AdminActor * AA, FILE * fptr_actor_log){
 	int i = 0;
 
 	fscanf(fptr_actor_log, "%d:", &(newp->serial_number)); // read serial_number
-	
+
 	if(actor_serial < newp->serial_number)
 		actor_serial = newp->serial_number;
 
@@ -80,11 +79,13 @@ int FileAddActorList(AdminActor * AA, FILE * fptr_actor_log){
 
 	while(1){
 		ch = fgetc(fptr_actor_log);
-		
+
 		if(ch == ',' || ch == '\n' || ch == EOF){
 			*(tmp+i) = '\0';
 			if(*tmp == ' ')
 				tmp = tmp + 1;
+
+			tmp = ColonCheckInFILE(tmp, "??;", ":");
 			newp->appear_movie_name->name = (char *)malloc(sizeof(strlen(tmp) + 1));
 			strcpy(newp->appear_movie_name->name, tmp);
 			newp->appear_movie_name->my_node = NULL;
@@ -111,7 +112,7 @@ int FileAddActorList(AdminActor * AA, FILE * fptr_actor_log){
 			break;
 		btp = btp->next_actor_node;
 	}
-	
+
 	btp->next_actor_node = newp;
 	newp->next_actor_node = AA->tail;
 	++AA->size;
@@ -145,7 +146,7 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 			fseek(fptr_actor_log, -1, SEEK_CUR);
 			if(i == 0){
 				free(match_actor_node->actor_name);
-				fscanf(fptr_actor_log, "%s", tmp);
+				fscanf(fptr_actor_log, "%[^:]", tmp);
 				tmp = ColonCheckInFILE(tmp, "??;", ":");
 				match_actor_node->actor_name = (char *)malloc(strlen(tmp) + 1);
 				strcpy(match_actor_node->actor_name, tmp);
@@ -154,7 +155,7 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 				fscanf(fptr_actor_log, "%c", &(match_actor_node->sex));
 			else if (i == 2){
 				free(match_actor_node->birth);
-				fscanf(fptr_actor_log, "%s", tmp);
+				fscanf(fptr_actor_log, "%[^:]", tmp);
 				tmp = ColonCheckInFILE(tmp, "??;", ":");
 				match_actor_node->birth = (char *)malloc(strlen(tmp) + 1);
 				strcpy(match_actor_node->birth, tmp);
@@ -162,12 +163,11 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 			else if (i == 3){
 				destroy_node = match_actor_node->appear_movie_name;
 				while(1){
-
 					if(destroy_node -> next_node!= NULL)
 						cur_node = destroy_node->next_node;
 					else
 						break;
-					
+
 					free(destroy_node->name);
 					free(destroy_node);
 					destroy_node = cur_node;
@@ -175,7 +175,7 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 				free(destroy_node->name);
 				free(destroy_node);
 				// clear destroy
-				
+
 				match_actor_node->appear_movie_name = (NextNode *)malloc(sizeof(NextNode));
 				save_node = match_actor_node->appear_movie_name;
 
@@ -183,9 +183,11 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 					fscanf(fptr_actor_log, "%[^,\n]", tmp);
 					if(*tmp == ' ')
 						tmp = tmp + 1;
+					
+					tmp = ColonCheckInFILE(tmp, "??;", ":");
 					match_actor_node->appear_movie_name->name = (char *)malloc(strlen(tmp)+1);
 					strcpy(match_actor_node->appear_movie_name->name, tmp);
-					
+
 					sub = fgetc(fptr_actor_log);
 					if(sub == ','){
 						match_actor_node->appear_movie_name->next_node = (NextNode *)malloc(sizeof(NextNode));
@@ -207,7 +209,7 @@ int FileUpdateActorList(AdminActor * AA, FILE * fptr_actor_log){
 /*****************************************************************************************************************************************/
 
 int FileDeleteActorList(AdminActor * AA, FILE * fptr_actor_log){
-	
+
 	int serial_num;
 	NextNode * destroy_node;
 	NextNode * cur_node;
@@ -225,7 +227,6 @@ int FileDeleteActorList(AdminActor * AA, FILE * fptr_actor_log){
 		}
 
 		else if(btp->next_actor_node == AA->tail){
-			printf("serial : %d\n", btp->serial_number);
 			return FALSE;
 		}
 
@@ -247,7 +248,6 @@ int FileDeleteActorList(AdminActor * AA, FILE * fptr_actor_log){
 	free(destroy_node->name);
 	free(destroy_node);
 	free(match_actor_node);
-
 	while(1){
 		ch = fgetc(fptr_actor_log);
 		if(ch == '\n' || ch == EOF)
@@ -271,7 +271,6 @@ NextActor * SearchActorSerial(AdminActor * AA, int serial_num){
 	}
 }
 /*****************************************************************************************************************************************/
-
 int SearchMyMovie(NextNode * search_movie_name, AdminMovie * AM){ // same with SearchMyMovie in Actor
 	NextMovie * ptr_movie_node = AM->head->next_movie_node;
 	while(1){
@@ -302,14 +301,14 @@ int SaveActor(AdminActor * AA){
 	int check;
 	int option_check = 0;
 	char ch;
-	
+
 	if(getchar() == '\n'){
 		check = 0;
 	}
 
 	else{
 		if(scanf("%s", option) == 1){ // nsbm  or -f
-	
+
 			if(strcmp(option, "-f") == 0){ // option is -f
 				getchar(); // ' '
 				scanf("%[^\n]", file_name);
@@ -358,7 +357,7 @@ int SaveActor(AdminActor * AA){
 		while(1){
 			if(ptr_actor_node == AA->tail)
 				break;
-			
+
 			while(1){
 				ch = *(option + option_check);
 				if(ch == 'n')
@@ -370,7 +369,7 @@ int SaveActor(AdminActor * AA){
 				else if(ch == 'm'){
 					ptr_appear_movie_name = ptr_actor_node->appear_movie_name;
 					fprintf(fptr_actor_list, "Appear Movie : ");
-				
+
 					while(ptr_appear_movie_name->next_node != NULL){
 						fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
 						ptr_appear_movie_name = ptr_appear_movie_name->next_node;
@@ -408,7 +407,7 @@ int SortActor(AdminActor * AA){
 	NextActor ** dptr_actor = (NextActor **)malloc(sizeof(NextActor *) * AA->size);
 	NextActor * ptr_actor_node = AA->head->next_actor_node;
 	NextNode * ptr_appear_movie_name = ptr_actor_node->appear_movie_name;
-	
+
 	char ** sort_string_arr = (char **)malloc(sizeof(char *) * AA->size);
 	char * tmp = (char *)malloc(sizeof(char) * 100);
 	char * file_name = (char *)malloc(sizeof(char) * 100);
@@ -424,10 +423,10 @@ int SortActor(AdminActor * AA){
 		option = getchar(); // t g d y r a or -f
 
 		if(option == '-'){
+			option = 'z';
 			getchar(); // f
 			getchar(); // ' '
 			scanf("%[^\n]", file_name);
-			option = 'z';
 			check = 1; // no option, yes file_name
 		}
 
@@ -450,7 +449,7 @@ int SortActor(AdminActor * AA){
 			while(1){
 				if(ptr_actor_node == AA->tail)
 					break;
-				else if(ptr_actor_node->sex == 'M' || ptr_actor_node->sex == 'm'){
+				else if(ptr_actor_node->sex == 'F' || ptr_actor_node->sex == 'f'){
 					printf("Name : %s\n", ptr_actor_node->actor_name);
 					printf("Sex : %c\n", ptr_actor_node->sex);
 					printf("Birth : %s\n", ptr_actor_node->birth);
@@ -472,7 +471,7 @@ int SortActor(AdminActor * AA){
 			while(1){
 				if(ptr_actor_node == AA->tail)
 					break;
-				else if(ptr_actor_node->sex == 'F' || ptr_actor_node->sex == 'f'){
+				else if(ptr_actor_node->sex == 'M' || ptr_actor_node->sex == 'm'){
 					printf("Name : %s\n", ptr_actor_node->actor_name);
 					printf("Sex : %c\n", ptr_actor_node->sex);
 					printf("Birth : %s\n", ptr_actor_node->birth);
@@ -486,10 +485,10 @@ int SortActor(AdminActor * AA){
 						printf("%s, ", ptr_appear_movie_name->name);
 						ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 					}
-					putchar('\n');
 				}
 				ptr_actor_node = ptr_actor_node->next_actor_node;
 			}
+			putchar('\n');
 		}
 		else if(option == 'b'){
 			for(int i = 0; i < AA->size ; ++i){
@@ -498,7 +497,7 @@ int SortActor(AdminActor * AA){
 			}
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(*sort_string_arr), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -525,8 +524,8 @@ int SortActor(AdminActor * AA){
 					printf("%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'm'){
 			for(int i = 0; i < AA->size ; ++i){
@@ -535,7 +534,7 @@ int SortActor(AdminActor * AA){
 			}
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(sort_string_arr[0]), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -562,8 +561,8 @@ int SortActor(AdminActor * AA){
 					printf("%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else if(option == 'z' || option == 'n'){
 			for(int i = 0; i < AA->size ; ++i){
@@ -572,7 +571,7 @@ int SortActor(AdminActor * AA){
 			}
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(sort_string_arr[0]), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -599,8 +598,8 @@ int SortActor(AdminActor * AA){
 					printf("%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				putchar('\n');
 			}
+			putchar('\n');
 		}
 		else{
 			printf("Option Error\n");
@@ -609,31 +608,9 @@ int SortActor(AdminActor * AA){
 	}
 	else if(check == 1 || check == 2){ // yes file_name
 		fptr_actor_list = fopen(file_name ,"wt");
-		
+
 		if(option == 's'){
 			ptr_actor_node = AA->head->next_actor_node;
-			while(1){
-				if(ptr_actor_node == AA->tail)
-					break;
-				else if(ptr_actor_node->sex == 'M' || ptr_actor_node->sex == 'm'){
-					fprintf(fptr_actor_list, "Name : %s\n", ptr_actor_node->actor_name);
-					fprintf(fptr_actor_list, "Sex : %c\n", ptr_actor_node->sex);
-					fprintf(fptr_actor_list, "Birth : %s\n", ptr_actor_node->birth);
-					fprintf(fptr_actor_list, "Appear Movie : ");
-					ptr_appear_movie_name = ptr_actor_node->appear_movie_name;
-					while(1){
-						if(ptr_appear_movie_name->next_node == NULL){
-							fprintf(fptr_actor_list, "%s\n", ptr_appear_movie_name->name);
-							break;
-						}
-						fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
-						ptr_appear_movie_name = ptr_appear_movie_name->next_node;
-					}
-					fputc('\n', fptr_actor_list);
-				}
-				ptr_actor_node = ptr_actor_node->next_actor_node;
-			}
-			ptr_actor_node = AA->head;
 			while(1){
 				if(ptr_actor_node == AA->tail)
 					break;
@@ -651,12 +628,33 @@ int SortActor(AdminActor * AA){
 						fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
 						ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 					}
-					fputc('\n', fptr_actor_list);
 				}
 				ptr_actor_node = ptr_actor_node->next_actor_node;
 			}
+			ptr_actor_node = AA->head;
+			while(1){
+				if(ptr_actor_node == AA->tail)
+					break;
+				else if(ptr_actor_node->sex == 'M' || ptr_actor_node->sex == 'm'){
+					fprintf(fptr_actor_list, "Name : %s\n", ptr_actor_node->actor_name);
+					fprintf(fptr_actor_list, "Sex : %c\n", ptr_actor_node->sex);
+					fprintf(fptr_actor_list, "Birth : %s\n", ptr_actor_node->birth);
+					fprintf(fptr_actor_list, "Appear Movie : ");
+					ptr_appear_movie_name = ptr_actor_node->appear_movie_name;
+					while(1){
+						if(ptr_appear_movie_name->next_node == NULL){
+							fprintf(fptr_actor_list, "%s\n\n", ptr_appear_movie_name->name);
+							break;
+						}
+						fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
+						ptr_appear_movie_name = ptr_appear_movie_name->next_node;
+					}
+				}
+				ptr_actor_node = ptr_actor_node->next_actor_node;
+			}
+			putchar('\n');
 		}
-		
+
 		else if(option == 'b'){
 			for(int i = 0; i < AA->size ; ++i){
 				*(sort_string_arr + i) = ptr_actor_node->birth;
@@ -664,7 +662,7 @@ int SortActor(AdminActor * AA){
 			}
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(sort_string_arr[0]), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -685,16 +683,16 @@ int SortActor(AdminActor * AA){
 				ptr_appear_movie_name = (*(dptr_actor + i))->appear_movie_name;
 				while(1){
 					if(ptr_appear_movie_name->next_node == NULL){
-						fprintf(fptr_actor_list, "%s\n", ptr_appear_movie_name->name);
+						fprintf(fptr_actor_list, "%s\n\n", ptr_appear_movie_name->name);
 						break;
 					}
 					fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				fputc('\n', fptr_actor_list);
 			}
+			putchar('\n');
 		}
-//
+		//
 		else if(option == 'm'){
 			for(int i = 0; i < AA->size ; ++i){
 				*(sort_string_arr + i) = ptr_actor_node->appear_movie_name->name;
@@ -702,7 +700,7 @@ int SortActor(AdminActor * AA){
 			}
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(sort_string_arr[0]), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -723,14 +721,14 @@ int SortActor(AdminActor * AA){
 				ptr_appear_movie_name = (*(dptr_actor + i))->appear_movie_name;
 				while(1){
 					if(ptr_appear_movie_name->next_node == NULL){
-						fprintf(fptr_actor_list, "%s\n", ptr_appear_movie_name->name);
+						fprintf(fptr_actor_list, "%s\n\n", ptr_appear_movie_name->name);
 						break;
 					}
 					fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				fputc('\n', fptr_actor_list);
 			}
+			putchar('\n');
 		}
 
 		else if (option == 'z' || option == 'n'){
@@ -740,7 +738,7 @@ int SortActor(AdminActor * AA){
 			}	
 
 			qsort((void *)sort_string_arr, AA->size, sizeof(sort_string_arr[0]), CompareString);
-			
+
 			for(int i = 0; i < AA->size; ++i){
 				ptr_actor_node = AA->head->next_actor_node; // error check plz
 				while(1){
@@ -761,14 +759,14 @@ int SortActor(AdminActor * AA){
 				ptr_appear_movie_name = (*(dptr_actor + i))->appear_movie_name;
 				while(1){
 					if(ptr_appear_movie_name->next_node == NULL){
-						fprintf(fptr_actor_list, "%s\n", ptr_appear_movie_name->name);
+						fprintf(fptr_actor_list, "%s\n\n", ptr_appear_movie_name->name);
 						break;
 					}
 					fprintf(fptr_actor_list, "%s, ", ptr_appear_movie_name->name);
 					ptr_appear_movie_name = ptr_appear_movie_name->next_node;
 				}
-				fputc('\n', fptr_actor_list);
 			}
+			putchar('\n');
 		}
 		else{
 			printf("Option Error\n");
@@ -817,11 +815,11 @@ int SearchActor(AdminActor * AA, char * string){
 	else if (checksm == 0 && checkqm != 0){	// ?
 		SearchActorQM(AA, substr);
 	}
-	
+
 	else if (checksm != 0 && checkqm != 0){ // ? and *
 		SearchActorQMSM(AA, substr);
 	}
-	
+
 	else if (checksm == 0 && checkqm == 0){ // no
 		SearchStringActor(AA, substr);
 	}
@@ -868,7 +866,7 @@ int SearchActorQM(AdminActor * AA, char * substr){
 			break;
 		else
 			strcpy(cmpstr, ptr_actor_node->actor_name);
-	
+
 		while(1){	
 			check = 0;
 
@@ -895,7 +893,7 @@ int SearchActorQM(AdminActor * AA, char * substr){
 	}
 
 	ptr_actor_node = AA->head;
-	
+
 	while(1){ // check serial
 		ptr_actor_node = ptr_actor_node->next_actor_node;
 
@@ -939,7 +937,7 @@ int SearchActorQM(AdminActor * AA, char * substr){
 			break;
 		else
 			strcpy(cmpstr, ptr_actor_node->birth);
-	
+
 		while(1){	
 			check = 0;
 			for(int i = 0 ; i < strlen(substr) ; ++i){
@@ -964,7 +962,7 @@ int SearchActorQM(AdminActor * AA, char * substr){
 
 	while(1){ // sex
 		ptr_actor_node = ptr_actor_node->next_actor_node;
-		
+
 		if(strlen(substr) != 1 || ptr_actor_node == AA->tail)
 			break;
 
@@ -986,7 +984,7 @@ int SearchActorQM(AdminActor * AA, char * substr){
 
 		if(ptr_actor_node == AA->tail)
 			break;
-	
+
 		else{
 			while(1){
 
@@ -1033,13 +1031,13 @@ int SearchActorQM(AdminActor * AA, char * substr){
 
 						if(*(cmpstr + strlen(substr) - 1) == '\0')
 							break; // while 3을 탈출
-					 } // while 3
+					} // while 3
 				}
-			   ptr_appear_movie_name = ptr_appear_movie_name->next_node;	
+				ptr_appear_movie_name = ptr_appear_movie_name->next_node;	
 			} // else에서 while 2
 		}
 	} // while 1
-	
+
 	cmpstr = NULL;
 	free(cmpstr);
 	return TRUE;
@@ -1050,7 +1048,7 @@ void SearchStringActor(AdminActor * AA, char * substr){
 	NextNode * ptr_appear_movie_name;
 	char * serial_string = (char *)malloc(10);
 
-	while(1){ // 797~834
+	while(1){
 		ptr_actor_node = ptr_actor_node->next_actor_node;
 
 		if(ptr_actor_node == AA->tail)
@@ -1088,7 +1086,7 @@ void SearchStringActor(AdminActor * AA, char * substr){
 			}
 		}
 	}
-   free(serial_string);   
+	free(serial_string);   
 }
 /*****************************************************************************************************************************************/
 void MatchActorPrint(NextActor * ptr_actor_node){
@@ -1107,31 +1105,31 @@ void MatchActorPrint(NextActor * ptr_actor_node){
 }
 /*****************************************************************************************************************************************/
 int DeleteActor(AdminActor * AA){
-	FILE * fptr_actor_log = fopen("ac.txt", "at");
+	FILE * fptr_actor_log = fopen("actor_log", "at");
 	int serial_num;
 	NextActor * match_actor_node;
 	NextActor * bptr_actor_node = AA->head;
 	NextNode * destroy_node;
 	NextNode * curp;
-	
+
 	scanf("%d", &serial_num);
 	match_actor_node = SearchActorSerial(AA, serial_num);
 
 	if(match_actor_node == NULL){
 		printf("No such record\n");
-	   return FALSE;	
+		return FALSE;	
 	}
 
 	while(bptr_actor_node->next_actor_node != match_actor_node)
 		bptr_actor_node = bptr_actor_node->next_actor_node;
 
 	bptr_actor_node->next_actor_node = match_actor_node->next_actor_node;
-	
+
 	free(match_actor_node->actor_name);
 	free(match_actor_node->birth);
 	destroy_node = match_actor_node->appear_movie_name;
 	free(match_actor_node);
-	
+
 	while(1){
 		if(destroy_node->next_node == NULL){
 			free(destroy_node->name);
@@ -1143,7 +1141,7 @@ int DeleteActor(AdminActor * AA){
 		free(destroy_node);
 		destroy_node = curp;
 	}
-	fprintf(fptr_actor_log, "delete:%d::::", serial_num);
+	fprintf(fptr_actor_log, "delete:%d::::\n", serial_num);
 	fclose(fptr_actor_log);
 	--AA->size;
 	printf("@@Done\n");
@@ -1156,7 +1154,7 @@ int PrintActor(AdminActor * AA){
 	NextMovie * ptr_movie_node;
 
 	int serial_num;
-	
+
 	scanf("%d", &serial_num);
 	ptr_actor_node = SearchActorSerial(AA, serial_num);
 
@@ -1164,12 +1162,12 @@ int PrintActor(AdminActor * AA){
 		printf("No such record\n");
 		return FALSE;
 	}
-	
+
 	ptr_movie_node = (NextMovie *)ptr_actor_node->appear_movie_name->my_node;
 	ptr_appear_movie_name = ptr_actor_node->appear_movie_name;
 
 	printf("%d, %s, %c, %s\n", ptr_actor_node->serial_number, ptr_actor_node->actor_name, ptr_actor_node->sex ,ptr_actor_node->birth);
-	
+
 	while(1){ // if name null ?
 		printf("\t%s", ptr_appear_movie_name->name);
 		if(ptr_movie_node != NULL){
@@ -1187,35 +1185,57 @@ int PrintActor(AdminActor * AA){
 }
 /**********************************************************************************************************************************************************/
 int AddActor(AdminActor * AA){
-	FILE * fptr_actor_log = fopen("ac.txt", "at");
+	FILE * fptr_actor_log = fopen("actor_log", "at");
 	NextActor * newp = (NextActor *)malloc(sizeof(NextActor));
 	NextActor * btp = AA->head;
 	NextNode * ptmp = newp->appear_movie_name = (NextNode *)malloc(sizeof(NextNode));
-	ptmp->my_node = NULL;
+	NextActor * match_actor_node;
+	NextNode * ptr_appear_movie_name;
 	char * tmp = (char *)malloc(100);
-	
+	ptmp->my_node = NULL;
+	char yn;
 	char ch = 0;
 	int i = 0;
 
 	getchar();
 	newp->serial_number = ++actor_serial;
-	
-	fprintf(fptr_actor_log, "add:%d:", newp->serial_number);
+
 	printf(" Actor name > ");
 	scanf("%[^\n]", tmp); getchar();
 	newp->actor_name = (char *)malloc(strlen(tmp)+1);
+
+	if((match_actor_node = ThereisSameActor(AA,tmp)) != NULL){
+		ptr_appear_movie_name = match_actor_node->appear_movie_name;
+		printf("@@You have the same record in actor list.\n");
+		printf("%d:%s:%c:%s:",match_actor_node->serial_number, match_actor_node->actor_name, match_actor_node->sex, match_actor_node->birth);
+		while(1){
+			if(ptr_appear_movie_name->next_node == NULL){
+				printf("%s\n", ptr_appear_movie_name->name);
+				break;
+			}
+			printf("%s, ", ptr_appear_movie_name->name);
+			ptr_appear_movie_name = ptr_appear_movie_name->next_node;
+		}
+		printf("Do you want to add any way? (Y / N)");
+		yn = getchar(); getchar();
+		if(yn == 'N' || yn == 'n')
+			return TRUE;
+	}
+
+	fprintf(fptr_actor_log, "add:%d:", newp->serial_number);
 	strcpy(newp->actor_name, tmp);
 	ColonCheckInActor(fptr_actor_log, newp->actor_name);
-	
+
 	printf(" Sex > ");
 	scanf("%c", &(newp->sex)); getchar();
-	
+	fprintf(fptr_actor_log, "%c:", newp->sex);
+
 	printf(" Birth > ");
 	scanf("%[^\n]", tmp); getchar();
 	newp->birth = (char *)malloc(strlen(tmp) + 1);
 	strcpy(newp->birth, tmp);
 	ColonCheckInActor(fptr_actor_log, newp->birth);
-	
+
 	printf(" Appear Movie > ");
 
 	while (1) { // processing appear_movie
@@ -1230,7 +1250,7 @@ int AddActor(AdminActor * AA){
 
 			newp->appear_movie_name->name = (char *)malloc(strlen(tmp) + 1);
 			strcpy(newp->appear_movie_name->name, tmp);
-			fprintf(fptr_actor_log, "%s", newp->appear_movie_name->name);
+			ColonCheckInAppearmovie(fptr_actor_log, newp->appear_movie_name->name);
 
 			if(ch == ','){
 				fputc(',', fptr_actor_log);
@@ -1250,7 +1270,6 @@ int AddActor(AdminActor * AA){
 			*(tmp + i) = ch;
 			++i;
 		}
-
 	}
 
 	newp->appear_movie_name = ptmp;
@@ -1262,6 +1281,7 @@ int AddActor(AdminActor * AA){
 	++AA->size;
 	free(tmp);
 	fclose(fptr_actor_log);
+	printf("@@Done\n");
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
@@ -1269,7 +1289,7 @@ int ColonCheckInActor(FILE * fptr_actor_log, char * string){ // change : to ??;
 	int i = 0;
 	char ch = 'x';
 	char * address;
-	
+
 	if((address = strchr(string, ':')) != NULL){
 		while(1){
 			ch = *(string + i);
@@ -1287,3 +1307,260 @@ int ColonCheckInActor(FILE * fptr_actor_log, char * string){ // change : to ??;
 	return TRUE;
 }
 /*****************************************************************************************************************************************/
+int ColonCheckInAppearmovie(FILE * fptr_actor_log, char * string){ // change : to ??;
+	int i = 0;
+	char ch = 'x';
+	char * address;
+
+	if((address = strchr(string, ':')) != NULL){
+		while(1){
+			ch = *(string + i);
+			if(ch == ':')
+				break;
+			else
+				fputc(ch, fptr_actor_log);
+			++i;
+		}
+		fprintf(fptr_actor_log,"??;%s", address + 1);
+	}
+	else
+		fprintf(fptr_actor_log, "%s", string);
+}
+/*****************************************************************************************************************************************/
+NextActor * ThereisSameActor(AdminActor * AA, char * string){
+	NextActor * ptr_actor_node = AA->head;
+
+	while(1){
+		ptr_actor_node = ptr_actor_node->next_actor_node;
+		if(ptr_actor_node == AA->tail)
+			break;
+		if(strcmp(string, ptr_actor_node->actor_name)==0)
+			return ptr_actor_node;
+	}
+	return NULL;
+}
+/*****************************************************************************************************************************************/
+int UpdateActor(AdminActor * AA){
+
+	FILE * fptr_actor_log = fopen("actor_log", "at");
+	NextActor * ptr_actor_node;
+	char * option = (char *)malloc(10);
+	char * sub = (char *)malloc(10);
+	char tmp;
+	int serial_num = 0;
+
+	if(scanf("%d", &serial_num)){ // no option
+		getchar();
+		ptr_actor_node = SearchActorSerial(AA, serial_num);
+		if(UpdateActorName(fptr_actor_log, AA, serial_num) == FALSE)
+			return FALSE;
+
+		UpdateActorSex(fptr_actor_log, ptr_actor_node);
+		UpdateActorBirth(fptr_actor_log, ptr_actor_node);
+		UpdateActorAppearmovie(fptr_actor_log, ptr_actor_node);
+	}
+
+	else{
+		scanf("%s", sub);
+		getchar();
+		scanf("%d", &serial_num);
+		while(getchar() != '\n') ; 
+		ptr_actor_node = SearchActorSerial(AA, serial_num);
+
+		for(int i = 0; i < strlen(sub); ++i){
+			if(*(sub + i) == 'n')
+				*(option) = 'n';
+			else if(*(sub + i) == 's')
+				*(option + 1) = 's';
+			else if(*(sub + i) == 'b')
+				*(option + 2) = 'b';
+			else if(*(sub + i) == 'm')
+				*(option + 3) = 'm';		
+		}
+
+		if(*(option) != 'n')
+			fprintf(fptr_actor_log, "update:%d:", serial_num);
+
+		for(int i = 0; i < 4 ;++i){
+			if(*(option + i) == 'n'){
+				if(UpdateActorName(fptr_actor_log, AA, serial_num) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 's'){
+				if(UpdateActorSex(fptr_actor_log, ptr_actor_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'b'){
+				if(UpdateActorBirth(fptr_actor_log, ptr_actor_node) == FALSE){
+					return FALSE;
+				}
+			}
+
+			else if(*(option + i) == 'm'){
+				if(UpdateActorAppearmovie(fptr_actor_log, ptr_actor_node) == FALSE){
+					return FALSE;
+				}
+			}
+			else{
+				fprintf(fptr_actor_log, "=:");
+			}
+		}
+	}
+	fclose(fptr_actor_log);
+	return TRUE;
+}
+/*****************************************************************************************************************************************/
+int UpdateActorName(FILE * fptr_actor_log, AdminActor * AA, int serial_num){
+	NextActor * ptr_actor_node = SearchActorSerial(AA, serial_num);
+	NextActor * match_actor_node;
+	NextNode * ptr_appear_movie_name;
+	char * tmp = (char *)malloc(100);
+	char ch;
+	if(ptr_actor_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Actor name : ");
+	scanf("%[^\n]", tmp); getchar();
+
+	if((match_actor_node = ThereisSameActor(AA, tmp)) == NULL){
+		free(ptr_actor_node->actor_name);
+		ptr_actor_node->actor_name = (char *)malloc(strlen(tmp) + 1);
+		strcpy(ptr_actor_node->actor_name, tmp);
+		fprintf(fptr_actor_log, "update:%d:", serial_num);
+		ColonCheckInActor(fptr_actor_log, ptr_actor_node->actor_name); // fprintf
+	}
+
+	else{
+		ptr_appear_movie_name = match_actor_node->appear_movie_name;
+		printf("@@You have the same record in actor list.\n");
+		printf("Actor name : %s\n", match_actor_node->actor_name);
+		printf("Sex : %c\n", match_actor_node->sex);
+		printf("Birth : %s\n", match_actor_node->birth);
+		printf("Appear movie name : ");
+		
+		while(1){
+			if(ptr_appear_movie_name->next_node == NULL){
+				printf("%s\n", ptr_appear_movie_name->name);
+				break;
+			}
+			printf("%s, ", ptr_appear_movie_name->name);
+			ptr_appear_movie_name = ptr_appear_movie_name->next_node;
+		}
+
+		printf("Do you want to change the record? (Y / N)");
+		ch = getchar(); getchar();
+
+		if(ch == 'Y' || ch == 'y'){
+			ptr_actor_node = ThereisSameActor(AA, tmp);
+			free(ptr_actor_node->actor_name);
+			ptr_actor_node->actor_name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_actor_node->actor_name, tmp);
+			fprintf(fptr_actor_log, "update:%d:", serial_num);
+			ColonCheckInActor(fptr_actor_log, ptr_actor_node->actor_name); // fprintf
+		}
+		else{
+			return FALSE;
+		}
+	}
+}
+/*****************************************************************************************************************************************/
+int UpdateActorAppearmovie(FILE * fptr_actor_log, NextActor * ptr_actor_node){
+	NextNode * destroy_node;
+	NextNode * cur_node;
+	NextNode * save_node;
+	char * tmp = (char *)malloc(100);
+	char ch;
+	int cnt = 0;
+	if(ptr_actor_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+	destroy_node = ptr_actor_node->appear_movie_name;
+	while(1){
+		if(destroy_node -> next_node!= NULL)
+			cur_node = destroy_node->next_node;
+		else
+			break;
+
+		free(destroy_node->name);
+		free(destroy_node);
+		destroy_node = cur_node;
+	}
+	free(destroy_node->name);
+	free(destroy_node);
+	// destroy
+	ptr_actor_node->appear_movie_name = (NextNode *)malloc(sizeof(NextNode));
+	save_node = ptr_actor_node->appear_movie_name;
+	printf("Appear Movie > ");
+	
+	while (1) {
+		ch = getchar();
+
+		if (ch == ',' || ch == '\n') {
+			*(tmp + cnt) = '\0';
+
+			if(*tmp == ' ')
+				tmp = tmp + 1;
+
+			ptr_actor_node->appear_movie_name->name = (char *)malloc(strlen(tmp) + 1);
+			strcpy(ptr_actor_node->appear_movie_name->name, tmp);
+			ColonCheckInAppearmovie(fptr_actor_log, ptr_actor_node->appear_movie_name->name);
+
+			if(ch == ','){
+				fputc(',', fptr_actor_log);
+				ptr_actor_node->appear_movie_name->next_node = (NextNode *)malloc(sizeof(NextNode));
+				ptr_actor_node->appear_movie_name->my_node = NULL;
+				ptr_actor_node->appear_movie_name = ptr_actor_node->appear_movie_name->next_node;
+				cnt = 0;
+			}
+
+			else if(ch == '\n'){
+				fputc('\n', fptr_actor_log);
+				ptr_actor_node->appear_movie_name->my_node = NULL;
+				ptr_actor_node->appear_movie_name->next_node = NULL;
+				break;
+			}
+		}
+
+		else {
+			*(tmp + cnt) = ch;
+			++cnt;
+		}
+	}
+	ptr_actor_node->appear_movie_name = save_node;
+	return TRUE;
+}
+
+/*****************************************************************************************************************************************/
+int UpdateActorBirth(FILE * fptr_actor_log, NextActor * ptr_actor_node){
+	char * tmp = (char *)malloc(100);
+	char ch;
+
+	printf("Birth : ");
+	scanf("%[^\n]", tmp); getchar();
+
+	free(ptr_actor_node->birth);
+	ptr_actor_node->birth = (char *)malloc(strlen(tmp) + 1);
+	strcpy(ptr_actor_node->birth, tmp);
+	ColonCheckInActor(fptr_actor_log, ptr_actor_node->birth); // fprintf
+	return TRUE;
+}
+
+/*****************************************************************************************************************************************/
+int UpdateActorSex(FILE * fptr_actor_log, NextActor * ptr_actor_node){
+	if(ptr_actor_node == NULL){
+		printf("There is no match serial\n");
+		return FALSE;
+	}
+
+	printf("Sex : ");
+	scanf("%c", &(ptr_actor_node->sex)); getchar();
+	fprintf(fptr_actor_log, "%c:", ptr_actor_node->sex);
+	return TRUE;
+}
