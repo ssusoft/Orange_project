@@ -1,3 +1,10 @@
+/********************************************************************************************************************************************/
+/* This program is made by team 3 (20170287 - Park Yeong June, 20170297 - Sin Dong Woo, 20170315 - Lee Seo Yeong, 20170317 - Lee Woo Sin)
+ * This program name is orange.
+ * This program is Movie admin program.
+ * We write Function Name with Upper character and lower character.
+ * We wrtie variable_num name with lower character and underbar. */
+/********************************************************************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
