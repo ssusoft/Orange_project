@@ -1,4 +1,4 @@
-#ifndef Header_Include6
+#ifndef Header_Include
 	#define Header_Include
 	#include "header.h"
 #endif
